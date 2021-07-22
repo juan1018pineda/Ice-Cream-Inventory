@@ -1,6 +1,10 @@
 let option = 0;
 let iceCreamArray = [];
 let salesArray = [];
+const ICE_CREAM_NAME = "Agregue el nombre del helado";
+const ICE_CREAM_FLAVOR = "Agregue el sabor del helado";
+const ICE_CREAM_INVENTORY = "Digite la cantidad del helado en inventario";
+const ICE_CREAM_PRICE = "Digite el precio del helado";
 
 function addIceCream() {
   const iceCream = {};
@@ -9,40 +13,33 @@ function addIceCream() {
   } else {
     iceCream.id = iceCreamArray.length;
   }
-  iceCream.name = prompt("Agregue el nombre del helado");
-  iceCream.flavor = prompt("Agregue el sabor del helado");
-  iceCream.inventory = parseInt(
-    prompt("Digite la cantidad del helado en inventario")
-  );
-  iceCream.price = parseFloat(prompt("Digite el precio del helado"));
+  iceCream.name = prompt(ICE_CREAM_NAME);
+  iceCream.flavor = prompt(ICE_CREAM_FLAVOR);
+  iceCream.inventory = parseInt(prompt(ICE_CREAM_INVENTORY));
+  iceCream.price = parseFloat(prompt(ICE_CREAM_PRICE));
   return iceCreamArray.push(iceCream);
+}
+
+function printIceCreams(message) {
+  for (let i = 0; i < iceCreamArray.length; i++) {
+    message += ` \nID: ${iceCreamArray[i].id}, Nombre: ${iceCreamArray[i].name}`;
+  }
+  return message;
 }
 
 function modify() {
   let modifyOption = 0;
   let modifyMessage = "Dígite el código del producto que desea modificar: \n";
   let selectedIceCream = {};
-  for (let i = 0; i < iceCreamArray.length; i++) {
-    modifyMessage += ` \nID: ${iceCreamArray[i].id}, Nombre: ${iceCreamArray[i].name}`;
-  }
-  modifyOption = parseInt(prompt(modifyMessage));
+  modifyOption = parseInt(prompt(printIceCreams(modifyMessage)));
   selectedIceCream = iceCreamArray[modifyOption];
-  selectedIceCream.name = prompt(
-    "Agregue el nombre del helado",
-    selectedIceCream.name
-  );
-  selectedIceCream.flavor = prompt(
-    "Agregue el sabor del helado",
-    selectedIceCream.flavor
-  );
+  selectedIceCream.name = prompt(ICE_CREAM_NAME, selectedIceCream.name);
+  selectedIceCream.flavor = prompt(ICE_CREAM_FLAVOR, selectedIceCream.flavor);
   selectedIceCream.inventory = parseInt(
-    prompt(
-      "Digite la cantidad del helado en inventario",
-      selectedIceCream.inventory
-    )
+    prompt(ICE_CREAM_INVENTORY, selectedIceCream.inventory)
   );
   selectedIceCream.price = parseFloat(
-    prompt("Digite el precio del helado", selectedIceCream.price)
+    prompt(ICE_CREAM_PRICE, selectedIceCream.price)
   );
   return;
 }
@@ -50,10 +47,7 @@ function modify() {
 function remove() {
   let removeOption = 0;
   let removeMessage = "Dígite el código del producto que desea eliminar: \n";
-  for (let i = 0; i < iceCreamArray.length; i++) {
-    removeMessage += ` \nID: ${iceCreamArray[i].id}, Nombre: ${iceCreamArray[i].name}`;
-  }
-  removeOption = parseInt(prompt(removeMessage));
+  removeOption = parseInt(prompt(printIceCreams(removeMessage)));
   iceCreamArray.splice(removeOption, 1);
   return;
 }
@@ -71,18 +65,26 @@ function sellIceCream() {
   let quantity = 0;
   let total = 0;
   let iceCream = {};
+  let sale = {};
   let sellMessage = "Dígite el código del producto que desea vender: \n";
-  for (let i = 0; i < iceCreamArray.length; i++) {
-    sellMessage += ` \nID: ${iceCreamArray[i].id}, Nombre: ${iceCreamArray[i].name}`;
-  }
-  sellOption = parseInt(prompt(sellMessage));
+  sellOption = parseInt(prompt(printIceCreams(sellMessage)));
   iceCream = iceCreamArray[sellOption];
   quantity = parseInt(prompt("Digite la cantidad que desea vender"));
   total = quantity * iceCream.price;
-  window.confirm(`Desea hacer esta compra por valor de: ${total}`)
-    ? (iceCream.inventory -= quantity)
-    : iceCream.inventory;
-  return;
+  let confirmation = window.confirm(
+    `Desea hacer esta compra por valor de: ${total}`
+  );
+  if (confirmation) {
+    iceCream.inventory -= quantity;
+    sale.iceCreamId = iceCream.id;
+    sale.iceCream = iceCream.name;
+    sale.quantity = quantity;
+    sale.total = total;
+    salesArray.push(sale);
+    return;
+  } else {
+    return;
+  }
 }
 
 function actions(option) {
